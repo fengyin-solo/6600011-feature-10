@@ -70,7 +70,19 @@ export const useEEGStore = create<EEGState>((set, get) => ({
   setEEGData: (d) => set({ eegData: d }),
   setChannel: (c) => set({ selectedChannel: c }),
   setBandPower: (b) => set({ bandPower: b }),
-  setStreaming: (v) => set({ isStreaming: v }),
+  setStreaming: (v) => {
+    if (!v) {
+      set({
+        isStreaming: false,
+        eegData: null,
+        bandPower: null,
+        brainState: null,
+        correlationData: null,
+      });
+    } else {
+      set({ isStreaming: true, playbackMode: false, activeRecording: null });
+    }
+  },
   setBrainState: (s) => set({ brainState: s }),
   setCorrelationData: (c) => set({ correlationData: c }),
   startRecording: () => {

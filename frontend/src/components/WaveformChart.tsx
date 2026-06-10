@@ -118,6 +118,7 @@ export const WaveformChart: React.FC = () => {
   const fetchEEG = async () => {
     const state = useEEGStore.getState();
     if (state.playbackMode) return;
+    if (!state.isStreaming) return;
     setLoading(true);
     let eeg: EEGData, bands: BandPower, brainState: BrainState, correlation: CorrelationData;
     try {
@@ -127,10 +128,8 @@ export const WaveformChart: React.FC = () => {
       brainState = data.brainState;
       correlation = data.correlation;
     } catch {
-      eeg = generateMockEEG(3);
-      bands = computeBandPower();
-      brainState = computeBrainState(bands);
-      correlation = computeCorrelation(state.selectedChannel, eeg);
+      setLoading(false);
+      return;
     }
     state.setEEGData(eeg);
     state.setBandPower(bands);
@@ -143,7 +142,7 @@ export const WaveformChart: React.FC = () => {
   };
 
   useEffect(() => {
-    if (playbackMode) {
+    if (playbackMode || !isStreaming) {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
@@ -155,7 +154,7 @@ export const WaveformChart: React.FC = () => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [selectedChannel, playbackMode]);
+  }, [selectedChannel, playbackMode, isStreaming]);
 
   const chartData = eegData?.data[selectedChannel]?.map((v: number, i: number) => ({
     t: eegData.time[i]?.toFixed(3), value: v.toFixed(4)

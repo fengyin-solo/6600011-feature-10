@@ -25,6 +25,8 @@ const formatTime = (ms: number): string => {
 
 export const RecordingPanel: React.FC = () => {
   const {
+    isStreaming,
+    setStreaming,
     isRecording,
     currentRecordingFrames,
     recordings,
@@ -140,26 +142,67 @@ export const RecordingPanel: React.FC = () => {
 
       {!playbackMode && (
         <div style={{ marginBottom: '16px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '12px',
+            background: isStreaming ? '#e8f5e9' : '#f5f5f5',
+            border: `1px solid ${isStreaming ? '#a5d6a7' : '#e0e0e0'}`,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{
+                width: '10px',
+                height: '10px',
+                borderRadius: '50%',
+                background: isStreaming ? '#388e3c' : '#9e9e9e',
+                animation: isStreaming ? 'pulse 1.5s infinite' : 'none',
+              }} />
+              <span style={{ fontSize: '13px', fontWeight: 600, color: isStreaming ? '#2e7d32' : '#666' }}>
+                {isStreaming ? '设备已连接 · 实时数据流中' : '设备未连接'}
+              </span>
+            </div>
+            <button
+              onClick={() => setStreaming(!isStreaming)}
+              style={{
+                padding: '6px 12px',
+                background: isStreaming ? '#757575' : 'linear-gradient(135deg, #1976d2, #1565c0)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '6px',
+                fontSize: '12px',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              {isStreaming ? '断开' : '连接设备'}
+            </button>
+          </div>
+
           {!isRecording ? (
             <button
               onClick={handleStartRecording}
+              disabled={!isStreaming}
               style={{
                 width: '100%',
                 padding: '12px',
-                background: 'linear-gradient(135deg, #d32f2f, #b71c1c)',
+                background: isStreaming ? 'linear-gradient(135deg, #d32f2f, #b71c1c)' : '#bdbdbd',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: 600,
-                cursor: 'pointer',
+                cursor: isStreaming ? 'pointer' : 'not-allowed',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',
                 transition: 'transform 0.2s',
+                opacity: isStreaming ? 1 : 0.6,
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
+              onMouseEnter={(e) => isStreaming && (e.currentTarget.style.transform = 'scale(1.02)')}
               onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
             >
               <span style={{ fontSize: '16px' }}>⏺</span>
