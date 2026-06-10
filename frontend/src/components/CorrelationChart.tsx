@@ -1,6 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
 import { useEEGStore } from '../store/eeg';
+import { EmptyGuide } from './EmptyGuide';
 
 const CHANNEL_NAMES: Record<string, string> = {
   Fp1: '左前额', Fp2: '右前额', F3: '左额', F4: '右额',
@@ -20,7 +21,7 @@ export const CorrelationChart: React.FC = () => {
           <span>{selectedChannel}</span>
           <span style={{ fontSize: '13px', color: '#666', fontWeight: 400 }}>{channelName} · 通道相关分析</span>
         </h3>
-        <div style={{ color: '#999', padding: '40px 0', textAlign: 'center' }}>等待数据中...</div>
+        <EmptyGuide />
       </div>
     );
   }

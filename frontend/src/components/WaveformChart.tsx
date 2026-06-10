@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useEEGStore } from '../store/eeg';
 import { EEGData, BandPower, BrainState, CorrelationData } from '../types';
+import { EmptyGuide } from './EmptyGuide';
 import axios from 'axios';
 
 const CHANNEL_NAMES: Record<string, string> = {
@@ -161,6 +162,19 @@ export const WaveformChart: React.FC = () => {
   })) || [];
 
   const channelName = CHANNEL_NAMES[selectedChannel] || selectedChannel;
+
+  if (!eegData) {
+    return (
+      <div style={{ padding: '16px', background: '#fff', borderRadius: '12px', margin: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+        <h3 style={{ margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '20px' }}>📈</span>
+          <span>{selectedChannel}</span>
+          <span style={{ fontSize: '13px', color: '#666', fontWeight: 400 }}>{channelName} · 波形图</span>
+        </h3>
+        <EmptyGuide />
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: '16px', background: '#fff', borderRadius: '12px', margin: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
